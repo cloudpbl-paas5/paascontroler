@@ -1,25 +1,21 @@
 #!/usr/bin/ruby
 # -*- encoding: utf-8 -*-
-require "./DbOperation"
 
-#client = Mysql2::Client.new(:host => "localhost", :username => "root", :password => "cloud2016", :database => "gitRepo")
-DB_initialize()
+require 'mysql2'
 
-# user1が新たに追加される例でのコード
-results = Usr_repo.where(:usr_name => 'pst')
+usrname = ARGV[0]
+ipaddr = ARGV[1]
+passwd = ARGV[2]
+repo_id = ARGV[3].to_i
+
+client = Mysql2::Client.new(:host => "localhost", :username => "root", :password => "cloud2016", :database => "gitRepo")
+
+# username, ipaddr, passwd, repo_id を引数にとり、ユーザー名からgitRipo.usr_repoを引く。
+# 該当するrowがなければ初プッシュなので、ユーザーDBを作成。gitRepo.UserDBにその情報を書く。
+results = client.query("SELECT * FROM gitRepo.Usr_repo WHERE usr_name = '#{usrname}'")
 if results.count == 0 then
-  
-
-
-
-
-
-
-
-# results = client.query("SELECT * FROM gitRepo.UserRepositories WHERE userName = 'user1'")
-# if results.count == 0 then
-#   client.query("CREATE USER user1@157.82.3.150 IDENTIFIED BY 'password'")
-#   client.query("CREATE DATABASE user1")
-#   client.query("GRANT ALL ON user1.* TO user1@157.82.3.150")
-#   client.query("INSERT INTO gitRepo.UserDB (repoID, dbName, userName, passwd) VALUES (1, 'user1', 'user1', 'password')")
-# end
+  client.query("CREATE USER '#{usrname}'@'#{ipaddr}' IDENTIFIED BY '#{passwd}'")
+  client.query("CREATE DATABASE #{usrname}")
+  client.query("GRANT ALL ON #{usrname}.* TO #{usrname}@#{ipaddr}")
+  client.query("INSERT INTO gitRepo.Usr_db (repo_id, db_name, usr_name, passwd) VALUES (#{repo_id}, '#{usrname}', '#{usrname}', '#{passwd}')")
+end
