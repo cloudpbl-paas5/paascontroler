@@ -8,7 +8,7 @@ $username = ARGV[0]
 $reponame = ARGV[1]
 $IP = ARGV[2]
 $IPtodelete = ARGV[3]
-#1.add new lxc
+#add new lxc
 file = '/etc/nginx/site-enabled/www.paas.exp.ci.i.u-tokyo.ac.jp'
 if File.read(file).include?($IP) == false
     line = File.open(file,"a") do|line|
@@ -18,7 +18,5 @@ if File.read(file).include?($IP) == false
     end
 end    
 
-#2.delete old lxc ip
-
-#3.reload
-#system "sudo nginx -s reload"
+#reload nginx
+system "sudo nginx -s reload"
