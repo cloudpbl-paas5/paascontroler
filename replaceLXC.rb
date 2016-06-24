@@ -1,5 +1,23 @@
 require "./changeUserDB/DbOperation"
+require "./changeUserDB/changeUserDB"
 
+# get IP 
+def getIP old_ip
+  ip_pool = ["157.82.3.154", "157.82.3.155", "157.82.3.156", "157.82.3.157", "157.82.3.158", "157.82.3.159"]
+  unless old_ip
+    Lxc.select(:ip) do |lxc|
+      ip_pool.delete lxc.ip
+    end
+  end
+
+  if ip_pool.size == 0
+    p "Can not allocate IP"
+  end
+
+  ip_address = old_ip || ip_pool.first
+  p "new container with IP #{ip_address}"
+  return ip_address
+end
 # First, you initilize DB connection.
 DB_initialize()
 
@@ -8,6 +26,13 @@ repository_name = ARGV[1]
 p "user name #{user_name} / repository name #{repository_name}"
 #get LXC record from table Lxc 
 userRepository = Usr_repo.find_by(usr_name: user_name, repo_name: repository_name)
+
+old_ip = nil
+unless userRepository
+  ip_address = getIP old_ip
+  user_password = changeUserDB(repository_name, user_name, ip_address)  
+  userRepository = Usr_repo.find_by(usr_name: user_name, repo_name: repository_name)
+end
 lxc = Lxc.find_by(repo_ID: userRepository.id)
 
 old_ip = nil
@@ -23,24 +48,11 @@ if lxc != nil
   lxc.destroy 
 end 
 
-# get IP 
-ip_pool = ["157.82.3.154", "157.82.3.155", "157.82.3.156", "157.82.3.157", "157.82.3.158", "157.82.3.159"]
-unless old_ip
-  Lxc.select(:ip) do |lxc|
-    ip_pool.delete lxc.ip
-  end
-end
-
-if ip_pool.size == 0
-  p "Can not allocate IP"
-end
-
-ip_address = old_ip || ip_pool.first
-p "new container with IP #{ip_address}"
+ip_address = getIP old_ip
 #start new LXC
 lxc_name = "#{user_name}-#{repository_name}-v#{Time.now.to_i.to_s}"
 #system(`lxc-clone -o templete -n #{lxc_name}`)
-system(`sudo lxc-create -t ubuntu -n #{lxc_name}`)
+system(`sudo lxc-create -t /home/yang/lxc/templates/staticpage-ubuntu -n #{lxc_name} -- --password="cloudpbl2016" --username=#{user_name} --dbpass=#{Usr_db.find_by(repo_id: userRepository.id).passwd} --container_ip_address=#{ip_address} --db_ip_address="157.82.3.150" --reponame=#{repository_name}`)
 system(`echo "lxc.network.ipv4 = #{ip_address}" >> /var/lib/lxc/#{lxc_name}/config`)
 system(`sudo lxc-start -n #{lxc_name} -d`)
 
