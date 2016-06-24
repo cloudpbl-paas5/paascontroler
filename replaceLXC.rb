@@ -52,7 +52,7 @@ ip_address = getIP old_ip
 #start new LXC
 lxc_name = "#{user_name}-#{repository_name}-v#{Time.now.to_i.to_s}"
 #system(`lxc-clone -o templete -n #{lxc_name}`)
-system(`sudo lxc-create -t /home/yang/lxc/templates/staticpage-ubuntu -n #{lxc_name} -- --password="cloudpbl2016" --username=#{user_name} --dbpass=#{Usr_db.find_by(repo_id: userRepository.id)["passwd"]} --container_ip_address=#{ip_address} --db_ip_address="157.82.3.150" --reponame=#{repository_name}`)
+system(`sudo lxc-create -t /home/yang/lxc/templates/staticpage-ubuntu -n #{lxc_name} -- --password="cloudpbl2016" --username=#{user_name} --dbpass=#{Usr_db.find_by(repo_id: userRepository.id).first["passwd"]} --container_ip_address=#{ip_address} --db_ip_address="157.82.3.150" --reponame=#{repository_name}`)
 system(`echo "lxc.network.ipv4 = #{ip_address}" >> /var/lib/lxc/#{lxc_name}/config`)
 system(`sudo lxc-start -n #{lxc_name} -d`)
 
