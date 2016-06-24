@@ -9,7 +9,7 @@ $reponame = ARGV[1]
 $IP = ARGV[2]
 $IPtodelete = ARGV[3]
 #1.add new lxc
-file = '/home/s33333123/cloud2016/www.paas.exp.ci.i.u-tokyo.ac.jp'
+file = '/etc/nginx/site-enabled/www.paas.exp.ci.i.u-tokyo.ac.jp'
 if File.read(file).include?($IP) == false
     line = File.open(file,"a") do|line|
     line.puts "\n" + "upstream #$username-#$reponame {"
