@@ -28,10 +28,38 @@ repo    #{paasUserName}/#{paasRepoName}
 
 
 out, err, status = Open3.capture3("cat #{targetTmpFilePath} >> #{gitoliteConfFilePath} ")
-
+puts out
+puts err
+puts status
 puts "The following configuration is added in #{gitoliteConfFilePath} \n" + Open3.capture3("cat #{targetTmpFilePath}")[0] + "\n"
 
-Open3.capture3("rm #{targetTmpFilePath}")
+out, err, status = Open3.capture3("rm #{targetTmpFilePath}")
+puts out
+puts err
+puts status
 
-Open3.capture3("cd #{gitoliteAdminDirPath} && git commit -m 'add #{paasUserName}/#{paasRepoName} by #{$0}' #{gitoliteConfFilePath} && git push")
 
+out, err, status = Open3.capture3("cd #{gitoliteAdminDirPath} && git commit -m 'add #{paasUserName}/#{paasRepoName} by #{$0}' #{gitoliteConfFilePath} && git push")
+puts out
+puts err
+puts status
+
+
+def rewriteHookScript(userName, repoName)
+
+targetHookFilePath = "/home/git/repositories/#{userName}/#{repoName}.git/hooks/post-update"
+replaceLXCPath = "/home/gitadmin/misc/replaceLXC.rb"
+
+File.write( targetHookFilePath,
+"""
+#!/usr/bin/sh
+
+ruby #{replaceLXCPath}
+
+""")
+
+puts "written in #{targetHookFilePath}"
+
+end
+
+#rewriteHookScript paasUserName, paasRepoName
