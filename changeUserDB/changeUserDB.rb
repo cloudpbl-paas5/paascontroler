@@ -16,7 +16,7 @@ def changeUserDB(repo_name, user_name, ip_address)
   user_db_name = "#{user_name}-#{repo_name[0..-5]}"
   passwd = [*0..9, *'a'..'z', *'A'..'Z'].sample(8).join
   client.query("CREATE USER IF NOT EXISTS '#{user_name}'@'157.82.3.%' IDENTIFIED BY '#{passwd}'")
-  client.query("CREATE DATABASE #{user_db_name}")
+  client.query("CREATE DATABASE `#{user_db_name}`")
   client.query("GRANT ALL ON #{user_db_name}.* TO #{user_name}@'157.82.3.%'")
   client.query("INSERT INTO gitRepo.Usr_db (repo_id, db_name, usr_name, passwd) VALUES (#{repo_id}, '#{user_db_name}', '#{user_name}', '#{passwd}')")
   return passwd
