@@ -13,7 +13,7 @@ def changeUserDB(repo_name, user_name, ip_address)
   results.each do |row|
     repo_id = row["id"]
   end
-  user_db_name = "#{user_name}-#{repo_name}"
+  user_db_name = "#{user_name}-#{repo_name[0..-5]}"
   passwd = [*0..9, *'a'..'z', *'A'..'Z'].sample(8).join
   client.query("CREATE USER IF NOT EXISTS '#{user_name}'@'157.82.3.%' IDENTIFIED BY '#{passwd}'")
   client.query("CREATE DATABASE #{user_db_name}")
