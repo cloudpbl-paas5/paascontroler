@@ -5,7 +5,7 @@
 #1.write new lxc ip to nginx
 
 $username = ARGV[0]
-$reponame = ARGV[1]
+$reponame = ARGV[1][0..-5]
 $IP = ARGV[2]
 $IPtodelete = ARGV[3]
 #add new lxc

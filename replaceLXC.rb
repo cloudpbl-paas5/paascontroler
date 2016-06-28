@@ -18,12 +18,17 @@ def getIP old_ip
   p "new container with IP #{ip_address}"
   return ip_address
 end
+
+
+
 # First, you initilize DB connection.
 DB_initialize()
 
 user_name = ARGV[0]
 repository_name = ARGV[1]
+
 p "user name #{user_name} / repository name #{repository_name}"
+
 #get LXC record from table Lxc 
 userRepository = Usr_repo.find_by(usr_name: user_name, repo_name: repository_name)
 
