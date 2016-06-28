@@ -19,4 +19,4 @@ if File.read(file).include?($IP) == false
 end    
 
 #reload nginx
-#system "sudo nginx -s reload"
+system "sudo nginx -s reload"
