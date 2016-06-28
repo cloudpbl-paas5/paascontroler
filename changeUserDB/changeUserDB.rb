@@ -13,10 +13,11 @@ def changeUserDB(repo_name, user_name, ip_address)
   results.each do |row|
     repo_id = row["id"]
   end
+  user_db_name = "#{user_name}-#{repo_name}"
   passwd = [*0..9, *'a'..'z', *'A'..'Z'].sample(8).join
-  client.query("CREATE USER '#{user_name}'@'#{ip_address}' IDENTIFIED BY '#{passwd}'")
-  client.query("CREATE DATABASE #{user_name}")
-  client.query("GRANT ALL ON #{user_name}.* TO #{user_name}@#{ip_address}")
-  client.query("INSERT INTO gitRepo.Usr_db (repo_id, db_name, usr_name, passwd) VALUES (#{repo_id}, '#{user_name}', '#{user_name}', '#{passwd}')")
+  client.query("CREATE USER IF NOT EXISTS '#{user_name}'@'157.82.3.%' IDENTIFIED BY '#{passwd}'")
+  client.query("CREATE DATABASE #{user_db_name}")
+  client.query("GRANT ALL ON #{user_db_name}.* TO #{user_name}@'157.82.3.%'")
+  client.query("INSERT INTO gitRepo.Usr_db (repo_id, db_name, usr_name, passwd) VALUES (#{repo_id}, '#{user_db_name}', '#{user_name}', '#{passwd}')")
   return passwd
 end
