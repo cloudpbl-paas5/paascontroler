@@ -42,17 +42,7 @@ unless userRepository
 end
 lxc = Lxc.find_by(repo_ID: userRepository.id)
 
-if lxc != nil
-  p "already have lxc with IP #{lxc.ip} and name : #{lxc.name}"
-  old_ip = lxc.ip
-
-  #kill old LXC  
-  p "destroy old lxc container"
-  system(`lxc-stop -n #{lxc.name}`)
-  system(`lxc-destroy -n #{lxc.name}`)
-  lxc.destroy 
-end 
-
+old_ip = lxc.ip if lxc
 ip_address = getIP old_ip
 #start new LXC
 
@@ -62,8 +52,18 @@ system(`sudo lxc-create -t /home/yang/lxc/templates/rails-ubuntu -n #{lxc_name} 
 #system(`echo "lxc.network.ipv4 = #{ip_address}" >> /var/lib/lxc/#{lxc_name}/config`) # redundant
 system(`sudo lxc-start -n #{lxc_name} -d /home/ubuntu/run-rails`)
 
-lxc = Lxc.new(repo_id: userRepository.id, name: lxc_name, ip: ip_address)
-lxc.save
+Lxc.new(repo_id: userRepository.id, name: lxc_name, ip: ip_address).save
+
+if lxc != nil
+  p "already have lxc with IP #{lxc.ip} and name : #{lxc.name}"
+
+  #kill old LXC  
+  p "destroy old lxc container"
+  system(`lxc-stop -n #{lxc.name}`)
+  system(`lxc-destroy -n #{lxc.name}`)
+  lxc.destroy
+end
+
 
 p "set up lxc container"
 system("ruby addServer.rb #{user_name} #{repository_name} #{ip_address}")
