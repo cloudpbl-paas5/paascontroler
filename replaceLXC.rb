@@ -66,4 +66,4 @@ lxc = Lxc.new(repo_id: userRepository.id, name: lxc_name, ip: ip_address)
 lxc.save
 
 p "set up lxc container"
-system("ruby changeLoadBalancer.rb #{user_name} #{repository_name} #{ip_address}")
+system("ruby addServer.rb #{user_name} #{repository_name} #{ip_address}")

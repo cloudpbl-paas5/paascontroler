@@ -9,7 +9,7 @@ def get_line_number(file, word)
   }}
 end
 def remove_lines(filename, start, num)
-  tmp = Tempfile.open(filename) do |fp|
+  tmp = Tempfile.open("tmpfile") do |fp|
     File.foreach(filename) do |line|
       if $. >= start and num > 0
         num -= 1
