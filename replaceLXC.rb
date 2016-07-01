@@ -50,7 +50,7 @@ lxc_name = "#{user_name}-#{repository_name}-v#{Time.now.to_i.to_s}"
 #system(`lxc-clone -o templete -n #{lxc_name}`)
 system(`sudo lxc-create -t /home/yang/lxc/templates/rails-ubuntu -n #{lxc_name} -- --password="cloudpbl2016" --username=#{user_name} --dbpass=#{(p Usr_db.find_by(repo_id: userRepository.id)).passwd} --container_ip_address=#{ip_address} --db_ip_address="157.82.3.150" --reponame=#{repository_name}`)
 #system(`echo "lxc.network.ipv4 = #{ip_address}" >> /var/lib/lxc/#{lxc_name}/config`) # redundant
-system(`sudo lxc-start -n #{lxc_name} -d /home/ubuntu/run-rails`)
+system(`sudo lxc-start -n #{lxc_name} -d `)
 
 Lxc.new(repo_id: userRepository.id, name: lxc_name, ip: ip_address).save
 
