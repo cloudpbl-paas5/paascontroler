@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# An example hook script to prepare a packed repository for use over
+# dumb transports.
+#
+# To enable this hook, rename this file to "post-update".
+
+touch /home/git/thisistest
+
+#!/bin/sh
+
+CWD=$(dirname $(readlink -f $0))
+
+
+
+withoutHookDir=${CWD%\/[a-z]*}
+repoName=${withoutHookDir/\/*\//}
+withoutRepoDir=${withoutHookDir%\/[a-z]*}
+userName=${withoutRepoDir/\/*\//}
+echo ${repoName}
+echo ${userName}
+
+
+#/home/git/misc/replaceLXC.rb ${userName} ${repoName}
+cd /home/yasutaka/paascontroller && echo 'cloud2016' | sudo -S ruby /home/yasutaka/paascontroller/replaceLXC.rb ${userName} ${repoName}
+
+# exec git update-server-info
